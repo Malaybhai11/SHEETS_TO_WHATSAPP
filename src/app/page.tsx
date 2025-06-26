@@ -15,12 +15,13 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
-    if (!file) return alert("Please upload a PDF!");
+    if (!file) return alert("Please upload a file!");
 
     const formData = new FormData();
-    formData.append("pdf", file);
+    formData.append("data", file); // Must be "data" for n8n webhook to accept binary
 
     setLoading(true);
+    setResponse("");
 
     try {
       const res = await fetch("http://140.228.254.22:5678/webhook/pdf-bot", {
@@ -28,21 +29,30 @@ export default function HomePage() {
         body: formData,
       });
 
+      if (!res.ok) {
+        throw new Error("Upload failed");
+      }
+
       const data = await res.json();
-      setResponse(data.message || "PDF sent successfully.");
+      setResponse(data.message || "✅ File sent successfully.");
     } catch (error) {
       console.error(error);
-      setResponse("Something went wrong.");
+      setResponse("❌ Something went wrong.");
     }
 
     setLoading(false);
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4">
+    <main className="min-h-screen flex flex-col items-center justify-center p-4 bg-background text-foreground">
       <div className="w-full max-w-md space-y-4">
-        <Label htmlFor="pdf">Upload a PDF</Label>
-        <Input id="pdf" type="file" accept="application/pdf" onChange={handleFileChange} />
+        <Label htmlFor="upload">Upload PDF or Sheet</Label>
+        <Input
+          id="upload"
+          type="file"
+          accept=".pdf,.xlsx,.xls,.csv"
+          onChange={handleFileChange}
+        />
         <Button onClick={handleSubmit} disabled={loading}>
           {loading ? "Sending..." : "Submit"}
         </Button>
