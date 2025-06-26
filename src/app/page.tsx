@@ -23,7 +23,7 @@ export default function HomePage() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://your-n8n-domain.com/webhook/pdf-bot", {
+      const res = await fetch("http://140.228.254.22:5678/webhook/pdf-bot", {
         method: "POST",
         body: formData,
       });
