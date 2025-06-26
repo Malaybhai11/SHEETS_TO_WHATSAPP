@@ -24,7 +24,7 @@ export default function HomePage() {
     setResponse("");
 
     try {
-      const res = await fetch("http://140.228.254.22:5678/webhook/pdf-bot", {
+      const res = await fetch("https://barbara-briefs-march-volt.trycloudflare.com/webhook/pdf-bot", {
         method: "POST",
         body: formData,
       });
